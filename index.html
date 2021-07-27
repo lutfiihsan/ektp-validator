@@ -1,0 +1,136 @@
+<html>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src='node_modules/tesseract.js/dist/tesseract.min.js'></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">e-KTP Validator</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="index.html">Check</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="about.html">About</a>
+                </li>
+            </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <h3 id="result" style="margin-top:10px;">Silahkan upload file ktp dalam bentuk image</h3>
+        <div id="msg"></div>
+        <div class="form-group" style="margin-top:10px;">
+            <label for="uploader">File e-KTP</label>
+            <input type="file" id="uploader" class="form-control">
+        </div>
+        <div class="form-group" style="margin-top:10px;">
+            <label for="nik">NIK</label>
+            <input type="text" id="nik" class="form-control">
+        </div>
+        <div class="form-group" style="margin-top:10px;">
+            <label for="nama">Nama</label>
+            <input type="text" id="nama" class="form-control">
+        </div>
+        <div class="form-group" style="margin-top:10px;">
+            <label for="alamat">Domisili</label>
+            <input type="text" id="alamat" class="form-control">
+        </div>
+        <div class="form-group" style="margin-top:10px;">
+            <input type="button" class="btn btn-primary" onclick="cekNik()" value="Check">
+        </div>
+    </div>
+    <nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+        <div class="container-fluid">
+            <p class="navbar-brand"href="#">Developed by Lutfi Ihsan</p>
+        </div>
+    </nav>
+
+    <script type="text/javascript">
+        let nik;
+        let nama;
+        let alamat;
+        let rtrw;
+        let kelurahan;
+        let domisili;
+        let results = [];
+        
+        
+        const recognize = async ({ target: { files }  }) => {
+            document.getElementById('msg').innerHTML = '<b><i style="color:blue;">Ektrak data sedang dalam proses ... </i></b>';
+            const { data: { text } } = await Tesseract.recognize(files[0], 'ind', {
+            corePath: 'node_modules/tesseract.js-core/tesseract-core.wasm.js',
+            logger: m => console.log(m),
+            });
+            result = text//.split('\n').filter((a)=>/\d{16}/.test(a));
+            nik = result.match(/\d{16}/g)[0]=='undefined'?'':result.match(/\d{16}/g)[0];
+            nama = result.match(/(?<=Nama)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Nama)(.*)(?=\n)/g)[0].trim().replace(':','');
+            alamat = result.match(/(?<=Alamat)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Alamat)(.*)(?=\n)/g)[0].trim().replace(':','');
+            // rtrw = result.match(/(?<=RT\\RW)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=RT\\RW)(.*)(?=\n)/g)[0].trim().replace(':','');
+            // kelurahan = result.match(/(?<=Kel\\Desa)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Kel\\Desa)(.*)(?=\n)/g)[0].trim().replace(':','');
+            // kecamatan = result.match(/(?<=Kecamatan)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Kecamatan)(.*)(?=\n)/g)[0].trim().replace(':','');
+            // domisili = alamat + ', ' + rtrw + ', ' + kelurahan + ', ' + kecamatan;
+            document.getElementById('nik').value = nik;
+            document.getElementById('nama').value = nama;
+            document.getElementById('alamat').value = alamat;
+            document.getElementById('msg').innerHTML = '<b><i style="color:green;">Ektrak data selesai </i></b>';
+    
+            console.log(text);
+            console.log(nik);
+            console.log(nama);
+            console.log(alamat);
+            // console.log(domisili);
+        }
+        const elm = document.getElementById('uploader');
+        elm.addEventListener('change', recognize);
+
+        function cekNik() {
+            
+            document.getElementById('msg').innerHTML = '';
+
+            let nomorNIK = document.getElementById('nik').value;
+            nomorNIK = String(nomorNIK);
+
+            if (nomorNIK.length == 16) {
+                let thisYear = new Date().getFullYear().toString().substr(-2);
+                let thisCode = nomorNIK.substr(-4);
+
+                let thisRegion = {
+                    provinsi: nomorNIK.substr(0, 2),
+                    kota: nomorNIK.substr(2, 2),
+                    kabupaten: nomorNIK.substr(2, 2),
+                    kecamatan: nomorNIK.substr(4, 2)
+                }
+                let thisDate = {
+                    hari: (nomorNIK.substr(6, 2) > 40) ? nomorNIK.substr(6, 2) - 40 : nomorNIK.substr(6, 2),
+                    bulan: nomorNIK.substr(8, 2),
+                    tahun: (nomorNIK.substr(10, 2) > 1 && nomorNIK.substr(10, 2) < thisYear) ? "20" + nomorNIK.substr(10, 2) : "19" + nomorNIK.substr(10, 2)
+                }
+
+                thisDate.lahir = new Date(thisDate.hari + "/" + thisDate.bulan + "/" + thisDate.tahun).toLocaleDateString();
+                
+                alert('NIK sudah benar');
+                // {
+                //     nik: nomorNIK,
+                //     wilayah: thisRegion,
+                //     tanggal: thisDate,
+                //     uniq: thisCode,
+                //     _link: {
+                //         _wilayah: 'http://www.kemendagri.go.id/pages/data-wilayah'
+                //     }
+                // }   
+            } else {
+                alert('Nomor NIK harus 16 digit');
+                // throw new Error(`Nomor NIK harus 16 digit`);
+            }
+            
+        }
+    </script>
+</body>
+</html>
