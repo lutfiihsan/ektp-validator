@@ -92,6 +92,8 @@
                 // console.log(domisili);   
             } catch (error) {
                 document.getElementById('msg').innerHTML = '<b><i style="color:red;">Kualitas gambar buruk! Silahkan upload ektp yang lebih jelas!</i></b>';
+                nik = result.match(/\d{16}/g)[0]=='undefined'?'':result.match(/\d{16}/g)[0];
+                document.getElementById('nik').value = nik;
                 // alert('Kualitas gambar buru!');   
             }
         }
