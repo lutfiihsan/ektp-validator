@@ -69,23 +69,29 @@
             logger: m => console.log(m),
             });
             result = text//.split('\n').filter((a)=>/\d{16}/.test(a));
-            nik = result.match(/\d{16}/g)[0]=='undefined'?'':result.match(/\d{16}/g)[0];
-            nama = result.match(/(?<=Nama)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Nama)(.*)(?=\n)/g)[0].trim().replace(':','');
-            alamat = result.match(/(?<=Alamat)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Alamat)(.*)(?=\n)/g)[0].trim().replace(':','');
-            // rtrw = result.match(/(?<=RT\\RW)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=RT\\RW)(.*)(?=\n)/g)[0].trim().replace(':','');
-            // kelurahan = result.match(/(?<=Kel\\Desa)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Kel\\Desa)(.*)(?=\n)/g)[0].trim().replace(':','');
-            // kecamatan = result.match(/(?<=Kecamatan)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Kecamatan)(.*)(?=\n)/g)[0].trim().replace(':','');
-            // domisili = alamat + ', ' + rtrw + ', ' + kelurahan + ', ' + kecamatan;
-            document.getElementById('nik').value = nik;
-            document.getElementById('nama').value = nama;
-            document.getElementById('alamat').value = alamat;
-            document.getElementById('msg').innerHTML = '<b><i style="color:green;">Ektrak data selesai </i></b>';
-    
-            console.log(text);
-            console.log(nik);
-            console.log(nama);
-            console.log(alamat);
-            // console.log(domisili);
+            try {
+
+                nik = result.match(/\d{16}/g)[0]=='undefined'?'':result.match(/\d{16}/g)[0];
+                nama = result.match(/(?<=Nama)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Nama)(.*)(?=\n)/g)[0].trim().replace(':','');
+                alamat = result.match(/(?<=Alamat)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Alamat)(.*)(?=\n)/g)[0].trim().replace(':','');
+                // rtrw = result.match(/(?<=RT\\RW)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=RT\\RW)(.*)(?=\n)/g)[0].trim().replace(':','');
+                // kelurahan = result.match(/(?<=Kel\\Desa)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Kel\\Desa)(.*)(?=\n)/g)[0].trim().replace(':','');
+                // kecamatan = result.match(/(?<=Kecamatan)(.*)(?=\n)/g)[0].trim().replace(':','')=='undefined'?'kualitas gambar buruk':result.match(/(?<=Kecamatan)(.*)(?=\n)/g)[0].trim().replace(':','');
+                // domisili = alamat + ', ' + rtrw + ', ' + kelurahan + ', ' + kecamatan;
+                document.getElementById('nik').value = nik;
+                document.getElementById('nama').value = nama;
+                document.getElementById('alamat').value = alamat;
+                document.getElementById('msg').innerHTML = '<b><i style="color:green;">Ektrak data selesai </i></b>';
+        
+                console.log(text);
+                console.log(nik);
+                console.log(nama);
+                console.log(alamat);
+                // console.log(domisili);   
+            } catch (error) {
+                document.getElementById('msg').innerHTML = '<b><i style="color:green;">Kualitas gambar buruk! Silahkan upload ektp yang lebih jelas!</i></b>';
+                // alert('Kualitas gambar buru!');   
+            }
         }
         const elm = document.getElementById('uploader');
         elm.addEventListener('change', recognize);
