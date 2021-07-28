@@ -1,4 +1,7 @@
-node_modules
-*.traineddata
-package.json
-package-lock.json
+/nbproject/
+/.idea/*
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
